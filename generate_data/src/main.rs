@@ -9,21 +9,36 @@ use rand_chacha::ChaCha8Rng;
 use rand::distributions::{Alphanumeric, DistString};
 use std::fs::File;
 use std::io::Write;
+use clap::Parser;
+
+
+#[derive(Parser)]
+struct Cli {
+    /// Random number seed
+    seed: u64,
+
+    /// Number of cars
+    #[arg(short, long, default_value_t = 10)]
+    cars: u64,
+
+    /// Number of hours
+    #[arg(long, default_value_t = 24)]
+    hours: u64
+}
 
 fn main() {
+    let args = Cli::parse();
 
-    const NUMBER_OF_CARS: i32 = 10;
     const TIME_INCREMENT_SECONDS: u64 = 60;  // 1 minute
-    const FINAL_TIME_MINUTES: u64 = 60;  // 1 hour
 
-    let mut rng = ChaCha8Rng::seed_from_u64(2);
+    let mut rng = ChaCha8Rng::seed_from_u64(args.seed);
 
     let first_time = 1695885322;
-    let last_time = first_time + (FINAL_TIME_MINUTES * 60);
+    let last_time = first_time + (args.hours * 60 * 60);
 
     let mut cars = IndexMap::new();
 
-    for _car_number in 1..NUMBER_OF_CARS+1
+    for _car_number in 1..=args.cars
     {
         let car_label = Alphanumeric.sample_string(&mut rng, 5);
         cars.insert(car_label.clone(), first_time);

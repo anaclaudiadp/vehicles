@@ -10,3 +10,4 @@ chrono = { version = "0.4.31", features = [] }
 rand = { version = "0.8.5", features = [] }
 rand_chacha = "0.3.1"
 indexmap = { version = "2.1.0", features = [] }
+clap = { version = "4.0", features = ["derive"] }
