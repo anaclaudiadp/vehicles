@@ -17,8 +17,6 @@ if __name__ == '__main__':
     print("\n\nTotal of all vehicles:")
     print(sum(distances.values()))
     print(reduce(lambda acc, each: acc + each, distances.values()))
-
-
     # this reducer is adding the values together one at a time, then returning the the total - the same as sum.
 
     def function(top, each):
@@ -30,15 +28,48 @@ if __name__ == '__main__':
         else:
             return top
 
-
+    # Question 3
     maximum1 = reduce(function, distances.items())
     # maximum using a function
     maximum2 = reduce(lambda top, each: each if top[1] < each[1] else top, distances.items())
     # maximum using a lambda and a ternary statement
+    maximum3 = max(distances.items(), key=lambda d: d[1])
 
-    # Question 3
     print(maximum1)
     print(maximum2)
+    print(maximum3)
+
+    # Question 4
+
+    left = open('../left.csv', 'r')
+    collection = {}
+
+    for line in left.readlines():
+        data = line.strip('\n').split(',')
+
+        vehicle_name = data[1]
+        if vehicle_name not in collection:
+            five_minutes = []
+            collection[vehicle_name] = (five_minutes, 0)
+
+        five_minutes = collection[vehicle_name][0]
+
+        distance = int(data[2])
+        if len(five_minutes) < 5:
+            five_minutes.append(distance)
+            continue
+
+        minutes_distance = sum(five_minutes[1:]) + distance
+        five_minutes.pop(0)
+        five_minutes.append(distance)
+        collection[vehicle_name] = (five_minutes, minutes_distance)\
+            if collection[vehicle_name][1] < minutes_distance\
+            else (five_minutes, collection[vehicle_name][1])
+
+    print(
+        "\n\nFurthest 5 minute interval\nVehicle: {0[0]}\nDistance: {0[1]}"
+        .format(max(map(lambda e: (e[0], e[1][1]), collection.items()), key=lambda e: e[1]))
+    )
 
     # Question 5
     left = open('../left.csv', 'r')
