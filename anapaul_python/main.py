@@ -52,19 +52,30 @@ if __name__ == '__main__':
 
     times_passed = 0
 
+    times = dict()
+
     for line in left.readlines():
         data = line.strip('\n').split(',')
         vehicle_id = data[1]
 
-        if vehicle_id not in passing:
-            continue
+        if data[0] not in times:
+            times[data[0]] = (0, 0)
 
-        current_distance = passing[vehicle_id] + int(data[2])
+        if vehicle_id == v1:
+            times[data[0]] = (data[2], times[data[0]][1])
+        elif vehicle_id == v2:
+            times[data[0]] = (times[data[0]][0], data[2])
 
-        if vehicle_id == v1 and passing[v1] < passing[v2] < current_distance:
+    for time, data in times.items():
+        current_distance_v1 = passing[v1] + int(data[0])
+        current_distance_v2 = passing[v2] + int(data[1])
+
+        if passing[v1] < passing[v2] and current_distance_v2 < current_distance_v1:
             times_passed = times_passed + 1
 
-        passing[vehicle_id] = current_distance
+        passing[v1] = current_distance_v1
+        passing[v2] = current_distance_v2
 
     # Question 5
-    print("Vehicle 1 passed Vehicle 2 %d times" % times_passed)
+    print("\n\nVehicle 1 passed Vehicle 2 %d times" % times_passed)
+
