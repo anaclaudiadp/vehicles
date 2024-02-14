@@ -1,3 +1,5 @@
+from functools import reduce
+
 
 if __name__ == '__main__':
     left = open('../left.csv', 'r')
@@ -14,3 +16,25 @@ if __name__ == '__main__':
 
     print("\n\nTotal of all vehicles:")
     print(sum(distances.values()))
+    print(reduce(lambda acc, each: acc + each, distances.values()))
+    # this reducer is adding the values together one at a time, then returning the the total - the same as sum.
+
+
+    def function(top, each):
+        if top is None:
+            return each
+
+        if top[1] < each[1]:
+            return each
+        else:
+            return top
+
+
+    maximum1 = reduce(function, distances.items())
+    # maximum using a function
+    maximum2 = reduce(lambda top, each: each if top[1] < each[1] else top, distances.items())
+    # maximum using a lambda and a ternary statement
+
+    print(maximum1)
+    print(maximum2)
+
