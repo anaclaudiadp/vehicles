@@ -1,5 +1,6 @@
 extern crate chrono;
 extern crate rand;
+
 use chrono::prelude::DateTime;
 use chrono::Utc;
 use std::time::{UNIX_EPOCH, Duration};
@@ -14,7 +15,11 @@ use clap::Parser;
 
 #[derive(Parser)]
 struct Cli {
+    #[arg(default_value = "left.csv")]
+    filename: String,
+
     /// Random number seed
+    #[arg(short, long, default_value_t = 1234)]
     seed: u64,
 
     /// Number of cars
@@ -44,12 +49,12 @@ fn main() {
         cars.insert(car_label.clone(), first_time);
     }
 
-    let mut samples = File::create("samples.txt").expect("Failed to create file");
+    let mut samples = File::create(args.filename).expect("Failed to create file");
 
     while cars.len()>0 {
         let car_number = rng.gen_range(0..cars.len());
         let car_entry = cars.get_index(car_number).expect("Car should exist");
-        let distance = rng.gen_range(1..100);
+        let distance = rng.gen_range(10..99);
         let car_time = cars[car_entry.0];
         let car_label = car_entry.0.to_owned();
         cars.insert_full(car_label.clone(), car_time+TIME_INCREMENT_SECONDS);
